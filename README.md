@@ -8,6 +8,7 @@ An API to convert currencies from BRL (Brazilian Reais) to another currencies.
 
 * Golang
 * Gin
+* golangci-lint
 
 
 ## Authors
