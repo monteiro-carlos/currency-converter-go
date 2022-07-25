@@ -1,0 +1,36 @@
+linters:
+  enable-all: true
+  disable:
+    - scopelint
+    - interfacer
+    - golint
+    - maligned
+    - varnamelen
+    - exhaustivestruct
+    - exhaustive
+    - funlen
+    - wsl
+    - gci
+    - tagliatelle
+    - wrapcheck
+    - cyclop
+    - nolintlint
+    - godox
+    - paralleltest
+    - gofumpt
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+
+issues:
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+output:
+  format: colored-line-number
+  sort-results: true
+# golangci.com configuration
+# https://github.com/golangci/golangci/wiki/Configuration
