@@ -1,0 +1,20 @@
+package routes
+
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/currency"
+	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/internal/container"
+)
+
+func Handler(dep *container.Dependency) {
+	router := gin.Default()
+	currencyHandler := &currency.Handler{
+		Service: dep.Services.Currency,
+	}
+	g := router.Group("/currency")
+	{
+		g.GET("/", currencyHandler.GetAllCurrencyRates)
+		g.POST("/", currencyHandler.CreateCurrencyRateManually)
+	}
+	router.Run(":5000")
+}

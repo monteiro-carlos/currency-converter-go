@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/currency"
-	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/currency/service"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/internal/database"
 )
 
@@ -13,7 +12,7 @@ import (
 //}
 
 type Services struct {
-	Currency service.ServiceI
+	Currency currency.ServiceI
 }
 
 type Dependency struct {
@@ -32,7 +31,7 @@ func New() (*Dependency, error) {
 		return nil, err
 	}
 
-	currencyService, err := service.NewCurrencyService(
+	currencyService, err := currency.NewCurrencyService(
 		repository,
 	)
 	if err != nil {
