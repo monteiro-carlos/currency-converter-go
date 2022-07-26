@@ -15,3 +15,8 @@ type ConversionResponse struct {
 type ConversionRequest struct {
 	Value decimal.Decimal `json:"value"`
 }
+
+type CurrencyPayload struct {
+	Currency Currency        `json:"currency"`
+	Rate     decimal.Decimal `json:"rate"`
+}
