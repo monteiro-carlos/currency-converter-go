@@ -13,37 +13,51 @@ type ServiceI interface {
 	GetAllLast() (*[]CurrencyRate, error)
 }
 
-type Repository struct {
+type Service struct {
 	db *gorm.DB
 }
 
-func (r *Repository) CreateCurrencyRate(currencyRate *CurrencyRate) error {
-	return r.db.Create(currencyRate).Error
+func NewService(db *gorm.DB) (*Service, error) {
+	if db == nil {
+		return nil, errors.New("db is required")
+	}
+
+	return &Service{
+		db: db,
+	}, nil
 }
 
-func (r *Repository) GetLastByCode(currencyCode string) (*CurrencyRate, error) {
+func (s *Service) CreateCurrencyRate(currencyRate *CurrencyRate) error {
+	return s.db.Debug().Create(currencyRate).Error
+}
+
+func (s *Service) GetLastByCode(currencyCode string) (*CurrencyRate, error) {
 	currencyRate := &CurrencyRate{Currency: Currency{Code: currencyCode}}
-	res := r.db.Order("created_at").Where(currencyRate).First(currencyRate)
+	res := s.db.Debug().Order("created_at").Where(currencyRate).First(currencyRate)
 	if res.Error != nil {
 		return nil, errors.Wrap(res.Error, "can't execute find")
 	}
 	return currencyRate, nil
 }
 
-func (r *Repository) GetLastByName(currencyName string) (*CurrencyRate, error) {
+func (s *Service) GetLastByName(currencyName string) (*CurrencyRate, error) {
 	currencyRate := &CurrencyRate{Currency: Currency{Name: currencyName}}
-	res := r.db.Order("created_at").Where(currencyRate).First(currencyRate)
+	res := s.db.Debug().Order("created_at").Where(currencyRate).First(currencyRate)
 	if res.Error != nil {
 		return nil, errors.Wrap(res.Error, "can't execute find")
 	}
 	return currencyRate, nil
 }
 
-func (r *Repository) GetAllLast() (*[]CurrencyRate, error) {
+func (s *Service) GetAllLast() (*[]CurrencyRate, error) {
 	currencyRates := &[]CurrencyRate{}
-	res := r.db.Order("created_at").Distinct("currency_code").Find(currencyRates)
+	res := s.db.Debug().
+		Select("DISTINCT ON (currency_code) currency_code", "currency_name", "rate", "created_at").
+		Order("currency_code").Order("created_at").Find(&currencyRates)
 	if res.Error != nil {
 		return nil, errors.Wrap(res.Error, "can't execute find")
 	}
 	return currencyRates, nil
 }
+
+// TODO: retirar os debugs

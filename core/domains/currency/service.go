@@ -3,6 +3,7 @@ package currency
 import (
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/currency/models"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/currency/repository"
+	"github.com/pkg/errors"
 )
 
 type ServiceI interface {
@@ -12,6 +13,18 @@ type ServiceI interface {
 
 type Currency struct {
 	Repository repository.ServiceI
+}
+
+func NewCurrencyService(
+	repository repository.ServiceI,
+) (*Currency, error) {
+	if repository == nil {
+		return nil, errors.New("repository can't be empty")
+	}
+
+	return &Currency{
+		Repository: repository,
+	}, nil
 }
 
 func (c *Currency) AddNewCurrencyManually(currency *models.CurrencyPayload) error {
