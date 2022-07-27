@@ -17,6 +17,7 @@ func Handler(dep *container.Dependency) {
 		g.POST("/", currencyHandler.CreateCurrencyRateManually)
 		g.GET("/update", currencyHandler.UpdateCurrencyRatesOnline)
 		g.POST("/convert", currencyHandler.ConvertToAllCurrencies)
+		g.GET("/code/:code", currencyHandler.GetCurrencyByCode)
 	}
 	router.Run(":5000")
 }

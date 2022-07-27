@@ -13,6 +13,7 @@ type ServiceI interface {
 	GetAllCurrencyRates() ([]models.CurrencyPayload, error)
 	UpdateCurrenciesDatabase() ([]models.CurrencyPayload, error)
 	ConvertValueToAllCurrencies(value *models.ConversionRequest) (*[]models.ConversionResponse, error)
+	GetCurrencyRatesByCode(code string) (*models.CurrencyPayload, error)
 }
 
 type Currency struct {
@@ -126,4 +127,20 @@ func (c *Currency) ConvertValueToAllCurrencies(
 	}
 
 	return &conversions, nil
+}
+
+func (c *Currency) GetCurrencyRatesByCode(code string) (*models.CurrencyPayload, error) {
+	currencyRate, err := c.Repository.GetLastByCode(code)
+	if err != nil {
+		return nil, err
+	}
+	currencyPayload := &models.CurrencyPayload{
+		Currency: models.Currency{
+			Name: currencyRate.Currency.Name,
+			Code: currencyRate.Currency.Code,
+		},
+		Rate: currencyRate.Rate,
+	}
+
+	return currencyPayload, nil
 }

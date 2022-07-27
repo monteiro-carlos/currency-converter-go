@@ -65,3 +65,14 @@ func (h *Handler) ConvertToAllCurrencies(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, conversions)
 }
+
+func (h *Handler) GetCurrencyByCode(c *gin.Context) {
+	code := c.Params.ByName("code")
+	currencyPayload, err := h.Service.GetCurrencyRatesByCode(code)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+	c.JSON(http.StatusOK, currencyPayload)
+}
