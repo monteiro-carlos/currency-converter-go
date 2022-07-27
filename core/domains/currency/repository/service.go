@@ -33,7 +33,7 @@ func (s *Service) CreateCurrencyRate(currencyRate *CurrencyRate) error {
 
 func (s *Service) GetLastByCode(currencyCode string) (*CurrencyRate, error) {
 	currencyRate := &CurrencyRate{Currency: Currency{Code: currencyCode}}
-	res := s.db.Debug().Order("created_at").Where(currencyRate).First(currencyRate)
+	res := s.db.Order("created_at desc").Where(currencyRate).First(currencyRate)
 	if res.Error != nil {
 		return nil, errors.Wrap(res.Error, "can't execute find")
 	}
@@ -42,7 +42,7 @@ func (s *Service) GetLastByCode(currencyCode string) (*CurrencyRate, error) {
 
 func (s *Service) GetLastByName(currencyName string) (*CurrencyRate, error) {
 	currencyRate := &CurrencyRate{Currency: Currency{Name: currencyName}}
-	res := s.db.Debug().Order("created_at").Where(currencyRate).First(currencyRate)
+	res := s.db.Order("created_at desc").Where(currencyRate).First(currencyRate)
 	if res.Error != nil {
 		return nil, errors.Wrap(res.Error, "can't execute find")
 	}
@@ -51,9 +51,8 @@ func (s *Service) GetLastByName(currencyName string) (*CurrencyRate, error) {
 
 func (s *Service) GetAllLast() (*[]CurrencyRate, error) {
 	currencyRates := &[]CurrencyRate{}
-	res := s.db.Debug().
-		Select("DISTINCT ON (currency_code) currency_code", "currency_name", "rate", "created_at").
-		Order("currency_code").Order("created_at").Find(&currencyRates)
+	res := s.db.Select("DISTINCT ON (currency_code) currency_code", "currency_name", "rate", "created_at").
+		Order("currency_code").Order("created_at desc").Find(&currencyRates)
 	if res.Error != nil {
 		return nil, errors.Wrap(res.Error, "can't execute find")
 	}
