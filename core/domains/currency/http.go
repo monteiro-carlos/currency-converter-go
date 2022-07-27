@@ -38,3 +38,13 @@ func (h *Handler) CreateCurrencyRateManually(c *gin.Context) {
 		"msg": "Currency rate manually added",
 	})
 }
+
+func (h *Handler) UpdateCurrencyRatesOnline(c *gin.Context) {
+	rates, err := h.Service.UpdateCurrenciesDatabase()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+	c.JSON(http.StatusOK, rates)
+}

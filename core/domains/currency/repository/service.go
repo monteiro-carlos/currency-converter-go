@@ -59,4 +59,6 @@ func (s *Service) GetAllLast() (*[]CurrencyRate, error) {
 	return currencyRates, nil
 }
 
-// TODO: retirar os debugs
+func (s *Service) UpdateCurrencyRatesOnline(currencyRate *CurrencyRate) error {
+	return s.db.Create(currencyRate).Error
+}
