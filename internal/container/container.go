@@ -6,11 +6,13 @@ import (
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/currency"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/health"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/internal/database"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
-//type components struct {
-//	Log log.Logger
-//}
+type components struct {
+	Log zap.Logger
+}
 
 type Services struct {
 	Currency currency.ServiceI
@@ -18,11 +20,16 @@ type Services struct {
 }
 
 type Dependency struct {
-	//Components components
-	Services Services
+	Components components
+	Services   Services
 }
 
 func New() (*Dependency, error) {
+	cmp, err := setupComponents()
+	if err != nil {
+		return nil, err
+	}
+
 	db, err := database.Open(os.Getenv("DSN"))
 	if err != nil {
 		return nil, err
@@ -35,6 +42,7 @@ func New() (*Dependency, error) {
 
 	currencyService, err := currency.NewCurrencyService(
 		repository,
+		cmp.Log,
 	)
 	if err != nil {
 		return nil, err
@@ -42,6 +50,7 @@ func New() (*Dependency, error) {
 
 	healthService, err := health.NewService(
 		repository,
+		cmp.Log,
 	)
 	if err != nil {
 		return nil, err
@@ -53,8 +62,22 @@ func New() (*Dependency, error) {
 	}
 
 	dep := Dependency{
-		Services: srv,
+		Components: *cmp,
+		Services:   srv,
 	}
 
 	return &dep, err
+}
+
+func setupComponents() (*components, error) {
+	config := zap.NewProductionConfig()
+	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	logger, err := config.Build()
+	if err != nil {
+		panic(err)
+	}
+
+	return &components{
+		Log: *logger,
+	}, nil
 }

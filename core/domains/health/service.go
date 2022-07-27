@@ -1,7 +1,6 @@
 package health
 
 import (
-	"log"
 	"math"
 	"time"
 
@@ -9,6 +8,7 @@ import (
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/health/enums"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/health/models"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 )
 
 type ServiceI interface {
@@ -17,6 +17,7 @@ type ServiceI interface {
 
 type Service struct {
 	repository repository.ServiceI
+	Logger     zap.Logger
 }
 
 const (
@@ -25,6 +26,7 @@ const (
 
 func NewService(
 	repository repository.ServiceI,
+	logger zap.Logger,
 ) (*Service, error) {
 	if repository == nil {
 		return nil, errors.New("repository is down")
@@ -32,6 +34,7 @@ func NewService(
 
 	return &Service{
 		repository: repository,
+		Logger:     logger,
 	}, nil
 }
 
@@ -56,7 +59,7 @@ func (h *Service) CheckDatabase() models.Check {
 	}
 
 	if err != nil {
-		log.Print("repository is down")
+		h.Logger.Error("errorMsg", zap.Error(errors.New("repository is down")))
 	}
 
 	return models.Check{
