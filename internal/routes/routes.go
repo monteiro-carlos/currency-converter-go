@@ -5,6 +5,9 @@ import (
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/currency"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/health"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/internal/container"
+	docs "github.com/monteiro-carlos/eng-gruposbf-backend-golang/internal/swagger/docs"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func Handler(dep *container.Dependency) {
@@ -29,6 +32,12 @@ func Handler(dep *container.Dependency) {
 		hc.GET("/liveness", healthHandler.LivenessHandler)
 		hc.GET("/readiness", healthHandler.ReadinessHandler)
 	}
+	docs.SwaggerInfo.BasePath = "/"
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	router.Run(":5000")
 }
+
+//docs "github.com/monteiro-carlos/eng-gruposbf-backend-golang/internal/swagger/docs"
+//swaggerfiles "github.com/swaggo/files"
+//ginSwagger "github.com/swaggo/gin-swagger"

@@ -14,3 +14,6 @@ lint-fix:
 docker-db:
 	@docker-compose -f ./docker-compose-db.yml up
 
+.PHONY: swagger
+swagger:
+	@go run github.com/swaggo/swag/cmd/swag init -g internal/api/main.go -o internal/swagger/docs --parseDependency --parseInternal --parseDepth 1
