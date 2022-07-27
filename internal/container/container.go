@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/currency"
+	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/health"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/internal/database"
 )
 
@@ -13,6 +14,7 @@ import (
 
 type Services struct {
 	Currency currency.ServiceI
+	Health   health.ServiceI
 }
 
 type Dependency struct {
@@ -38,8 +40,16 @@ func New() (*Dependency, error) {
 		return nil, err
 	}
 
+	healthService, err := health.NewService(
+		repository,
+	)
+	if err != nil {
+		return nil, err
+	}
+
 	srv := Services{
 		Currency: currencyService,
+		Health:   healthService,
 	}
 
 	dep := Dependency{

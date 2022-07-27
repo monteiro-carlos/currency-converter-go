@@ -10,6 +10,7 @@ type ServiceI interface {
 	CreateCurrencyRate(currencyRate *CurrencyRate) error
 	GetLastByCode(currencyCode string) (*CurrencyRate, error)
 	GetAllLast() (*[]CurrencyRate, error)
+	DataBaseHealthCheck() (string, error)
 }
 
 type Service struct {
@@ -47,4 +48,18 @@ func (s *Service) GetAllLast() (*[]CurrencyRate, error) {
 		return nil, errors.Wrap(res.Error, "can't execute find")
 	}
 	return currencyRates, nil
+}
+
+func (s *Service) DataBaseHealthCheck() (string, error) {
+	sqlDB, err := s.db.DB()
+	if err != nil {
+		return "DOWN", err
+	}
+
+	dbErr := sqlDB.Ping()
+	if dbErr != nil {
+		return "DOWN", dbErr
+	}
+
+	return "UP", nil
 }
