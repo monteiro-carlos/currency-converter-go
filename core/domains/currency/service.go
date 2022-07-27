@@ -12,6 +12,7 @@ type ServiceI interface {
 	AddNewCurrencyManually(currency *models.CurrencyPayload) error
 	GetAllCurrencyRates() ([]models.CurrencyPayload, error)
 	UpdateCurrenciesDatabase() ([]models.CurrencyPayload, error)
+	ConvertValueToAllCurrencies(value *models.ConversionRequest) (*[]models.ConversionResponse, error)
 }
 
 type Currency struct {
@@ -101,4 +102,28 @@ func (c *Currency) UpdateCurrenciesDatabase() ([]models.CurrencyPayload, error) 
 	}
 
 	return currencyPayloadMod, nil
+}
+
+func (c *Currency) ConvertValueToAllCurrencies(
+	value *models.ConversionRequest,
+) (*[]models.ConversionResponse, error) {
+	var conversions []models.ConversionResponse
+	cr, err := c.Repository.GetAllLast()
+	currencyRates := *cr
+	if err != nil {
+		return nil, err
+	}
+	for _, rate := range currencyRates {
+		convertedValue := rate.Rate.Mul(value.Value)
+		conversion := &models.ConversionResponse{
+			Currency: models.Currency{
+				Name: rate.Currency.Name,
+				Code: rate.Currency.Code,
+			},
+			Value: convertedValue,
+		}
+		conversions = append(conversions, *conversion)
+	}
+
+	return &conversions, nil
 }

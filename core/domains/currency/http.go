@@ -48,3 +48,20 @@ func (h *Handler) UpdateCurrencyRatesOnline(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, rates)
 }
+
+func (h *Handler) ConvertToAllCurrencies(c *gin.Context) {
+	var conversionReq models.ConversionRequest
+	if err := c.ShouldBindJSON(&conversionReq); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	conversions, err := h.Service.ConvertValueToAllCurrencies(&conversionReq)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+	}
+	c.JSON(http.StatusOK, conversions)
+}
