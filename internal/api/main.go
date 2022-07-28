@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/joho/godotenv"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/internal/container"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/internal/routes"
 )
@@ -16,6 +17,10 @@ import (
 // @in header
 // @schemes http https.
 func main() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		return
+	}
 	dep, err := container.New()
 	if err != nil {
 		log.Fatal(err)

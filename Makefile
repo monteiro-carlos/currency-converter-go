@@ -1,6 +1,6 @@
 .PHONY: app-run
 app-run:
-	@go run main.go
+	@go run ./internal/api/main.go
 
 .PHONY: lint
 lint:
@@ -13,6 +13,10 @@ lint-fix:
 .PHONY: docker-db
 docker-db:
 	@docker-compose -f ./docker-compose-db.yml up
+
+.PHONY: docker-db-stop
+docker-db-stop:
+	@docker-compose -f ./docker-compose-db.yml stop
 
 .PHONY: swagger
 swagger:
