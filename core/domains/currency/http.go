@@ -18,7 +18,7 @@ type Handler struct {
 // @Produce json
 // @Success 200 {object} []models.CurrencyPayload
 // @Failure 404 {object} httputil.HTTPError
-// @Router /currency [get]
+// @Router /currency [get].
 func (h *Handler) GetAllCurrencyRates(c *gin.Context) {
 	currencyRates, err := h.Service.GetAllCurrencyRates()
 	if err != nil {
@@ -37,7 +37,7 @@ func (h *Handler) GetAllCurrencyRates(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} map[string]any
 // @Failure 404 {object} httputil.HTTPError
-// @Router /currency [post]
+// @Router /currency [post].
 func (h *Handler) CreateCurrencyRateManually(c *gin.Context) {
 	var currencyPayload models.CurrencyPayload
 	if err := c.ShouldBindJSON(&currencyPayload); err != nil {
@@ -63,7 +63,7 @@ func (h *Handler) CreateCurrencyRateManually(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} []models.CurrencyPayload
 // @Failure 404 {object} httputil.HTTPError
-// @Router /currency/update [get]
+// @Router /currency/update [get].
 func (h *Handler) UpdateCurrencyRatesOnline(c *gin.Context) {
 	rates, err := h.Service.UpdateCurrenciesDatabase()
 	if err != nil {
@@ -82,7 +82,7 @@ func (h *Handler) UpdateCurrencyRatesOnline(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} []models.ConversionResponse
 // @Failure 404 {object} httputil.HTTPError
-// @Router /currency/convert [post]
+// @Router /currency/convert [post].
 func (h *Handler) ConvertToAllCurrencies(c *gin.Context) {
 	var conversionReq models.ConversionRequest
 	if err := c.ShouldBindJSON(&conversionReq); err != nil {
@@ -107,7 +107,7 @@ func (h *Handler) ConvertToAllCurrencies(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} []models.CurrencyPayload
 // @Failure 404 {object} httputil.HTTPError
-// @Router /currency [get]
+// @Router /currency [get].
 func (h *Handler) GetCurrencyByCode(c *gin.Context) {
 	code := c.Params.ByName("code")
 	currencyPayload, err := h.Service.GetCurrencyRatesByCode(code)

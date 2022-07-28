@@ -1,36 +1,76 @@
 linters:
-  enable-all: true
-  disable:
-    - scopelint
-    - interfacer
-    - golint
-    - maligned
-    - varnamelen
-    - exhaustivestruct
+  # please, do not use `enable-all`: it's deprecated and will be removed soon.
+  # inverted configuration with `enable-all` and `disable` is not scalable during updates of golangci-lint
+  disable-all: true
+  enable:
+    - bodyclose
+    - deadcode
+    - depguard
+    - dogsled
+    - dupl
+    - errcheck
     - exhaustive
-    - funlen
-    - wsl
-    - gci
-    - tagliatelle
-    - wrapcheck
-    - cyclop
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - gofmt
+    - goimports
+    - revive
+    - gomnd
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - lll
+    - misspell
+    - nakedret
+    - noctx
     - nolintlint
+    - rowserrcheck
+    - exportloopref
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - varcheck
+    - asciicheck
+    - gocognit
     - godox
-    - paralleltest
-    - gofumpt
+    - goerr113
+    - nestif
+    - prealloc
+    - whitespace
 
-linters-settings:
-  errcheck:
-    check-type-assertions: true
-    check-blank: true
+  # don't check
+  # - testpackage # incompatible with last version of golang because of putting test_PACKAGENAME on test file
+  # - wsl # incompatible with last version of golang because of last line on file
+  # - funlen
+  # - godot
+  # - interfacer # deprecated
+  # - maligned # deprecated
+  # - gochecknoglobals
 
 issues:
-  exclude-use-default: false
-  max-issues-per-linter: 0
-  max-same-issues: 0
+  exclude-rules:
+    # Exclude some linters from running on tests files.
+    - path: _test\.go
+      linters:
+        - funlen
+        - lll
+        - dupl
 
-output:
-  format: colored-line-number
-  sort-results: true
+run:
+  timeout: 1m
+  skip-dirs:
+    - test/
+    # - internal/cache
+    # - internal/renameio
+    # - internal/robustio
+
 # golangci.com configuration
 # https://github.com/golangci/golangci/wiki/Configuration

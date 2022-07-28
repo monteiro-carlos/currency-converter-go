@@ -1,7 +1,7 @@
 package currency
 
 import (
-	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/adapters/excRatesApi"
+	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/adapters/exchangeapi"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/currency/models"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/currency/repository"
 	"github.com/pkg/errors"
@@ -56,7 +56,7 @@ func (c *Currency) AddNewCurrencyManually(currency *models.CurrencyPayload) erro
 }
 
 func (c *Currency) GetAllCurrencyRates() ([]models.CurrencyPayload, error) {
-	var currencyPayload []models.CurrencyPayload
+	currenciesPayload := make([]models.CurrencyPayload, 0)
 	cr, err := c.repository.GetAllLast()
 	currencyRates := *cr
 
@@ -68,20 +68,20 @@ func (c *Currency) GetAllCurrencyRates() ([]models.CurrencyPayload, error) {
 			},
 			Rate: rate.Rate,
 		}
-		currencyPayload = append(currencyPayload, *currencyModel)
+		currenciesPayload = append(currenciesPayload, *currencyModel)
 	}
 	if err != nil {
 		c.Logger.Error("errorMsg", zap.Error(err))
 		return nil, err
 	}
 	c.Logger.Info("GetAllCurrencyRates",
-		zap.Any("payload", currencyPayload))
-	return currencyPayload, nil
+		zap.Any("payload", currenciesPayload))
+	return currenciesPayload, nil
 }
 
 func (c *Currency) UpdateCurrenciesDatabase() ([]models.CurrencyPayload, error) {
-	var currencyPayloadRep []repository.CurrencyRate
-	rates, err := excRatesApi.GetCurrencyRates()
+	currenciesPayloadRep := make([]repository.CurrencyRate, 0)
+	rates, err := exchangeapi.GetCurrencyRates()
 	if err != nil {
 		c.Logger.Error("errorMsg", zap.Error(err))
 		return nil, err
@@ -95,18 +95,18 @@ func (c *Currency) UpdateCurrenciesDatabase() ([]models.CurrencyPayload, error) 
 		currencyRep := &repository.CurrencyRate{
 			Currency: repository.Currency{
 				Code: rate.Code,
-				Name: excRatesApi.GetCurrencyName(rate.Name),
+				Name: exchangeapi.GetCurrencyName(rate.Name),
 			},
 			Rate: decimalValue,
 		}
-		currencyPayloadRep = append(currencyPayloadRep, *currencyRep)
+		currenciesPayloadRep = append(currenciesPayloadRep, *currencyRep)
 		if err := c.repository.CreateCurrencyRate(currencyRep); err != nil {
 			c.Logger.Error("errorMsg", zap.Error(err))
 			return nil, err
 		}
 	}
-	var currencyPayloadMod []models.CurrencyPayload
-	for _, currencyPayload := range currencyPayloadRep {
+	currenciesPayloadMod := make([]models.CurrencyPayload, 0)
+	for _, currencyPayload := range currenciesPayloadRep {
 		currencyMod := &models.CurrencyPayload{
 			Currency: models.Currency{
 				Name: currencyPayload.Currency.Name,
@@ -114,18 +114,18 @@ func (c *Currency) UpdateCurrenciesDatabase() ([]models.CurrencyPayload, error) 
 			},
 			Rate: currencyPayload.Rate,
 		}
-		currencyPayloadMod = append(currencyPayloadMod, *currencyMod)
+		currenciesPayloadMod = append(currenciesPayloadMod, *currencyMod)
 	}
 	c.Logger.Info("UpdateCurrenciesDatabase",
-		zap.Any("payload", currencyPayloadMod))
+		zap.Any("payload", currenciesPayloadMod))
 
-	return currencyPayloadMod, nil
+	return currenciesPayloadMod, nil
 }
 
 func (c *Currency) ConvertValueToAllCurrencies(
 	value *models.ConversionRequest,
 ) (*[]models.ConversionResponse, error) {
-	var conversions []models.ConversionResponse
+	conversions := make([]models.ConversionResponse, 0)
 	cr, err := c.repository.GetAllLast()
 	currencyRates := *cr
 	if err != nil {

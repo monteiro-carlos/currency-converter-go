@@ -14,7 +14,7 @@ import (
 // @contact.name Carlos Fernandes
 // @query.collection.format multi
 // @in header
-// @schemes http https
+// @schemes http https.
 func main() {
 	dep, err := container.New()
 	if err != nil {

@@ -35,9 +35,8 @@ func Handler(dep *container.Dependency) {
 	docs.SwaggerInfo.BasePath = "/"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	router.Run(":5000")
+	err := router.Run(":5000")
+	if err != nil {
+		return
+	}
 }
-
-//docs "github.com/monteiro-carlos/eng-gruposbf-backend-golang/internal/swagger/docs"
-//swaggerfiles "github.com/swaggo/files"
-//ginSwagger "github.com/swaggo/gin-swagger"

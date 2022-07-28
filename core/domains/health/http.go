@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/health/models"
-	_ "github.com/swaggo/swag/example/celler/httputil"
+	_ "github.com/swaggo/swag/example/celler/httputil" // necessary for swagger
 )
 
 type Handler struct {

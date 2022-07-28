@@ -1,4 +1,4 @@
-package excRatesApi
+package exchangeapi
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/adapters/excRatesApi/models"
+	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/adapters/exchangeapi/models"
 )
 
 func GetCurrencyName(s string) string {
@@ -18,14 +18,13 @@ func GetCurrencyName(s string) string {
 }
 
 func GetCurrencyRates() ([]models.ExcRatesResp, error) {
-	var rates []models.ExcRatesResp
+	rates := make([]models.ExcRatesResp, 0)
 	var rawResults map[string]interface{}
-	//var results []map[string]interface{}
 	reqURL := fmt.Sprintf("%v/%v",
 		os.Getenv("FREE_EXC_RATES_API"),
 		os.Getenv("CURRENCY_CODES"))
 
-	res, err := http.Get(reqURL)
+	res, err := http.Get(reqURL) //nolint:gosec
 	if err != nil {
 		log.Panic(err, "can't execute exchange rates api get request")
 		return nil, err
@@ -42,13 +41,6 @@ func GetCurrencyRates() ([]models.ExcRatesResp, error) {
 		return nil, err
 	}
 
-	//codes := GetIndividualCurrencyCodes()
-	//for _, code := range codes {
-	//	result := make(map[string]interface{})
-	//	resultCode := code + "BRL"
-	//	rawRate := result[resultCode].(map[string]interface{})
-	//	results = append(results, rawRate)
-	//}
 	for _, value := range rawResults {
 		var rate models.ExcRatesResp
 		jsonStr, err := json.Marshal(value)
