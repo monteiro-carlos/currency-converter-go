@@ -17,13 +17,13 @@ type Handler struct {
 // @Tags Currency
 // @Produce json
 // @Success 200 {object} []models.CurrencyPayload
-// @Failure 404 {object} httputil.HTTPError
+// @Failure 404 {object} models.ErrorResponse
 // @Router /currency [get].
 func (h *Handler) GetAllCurrencyRates(c *gin.Context) {
 	currencyRates, err := h.Service.GetAllCurrencyRates()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Message: err.Error(),
 		})
 	}
 	c.JSON(http.StatusOK, &currencyRates)
@@ -36,20 +36,20 @@ func (h *Handler) GetAllCurrencyRates(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param currencyRate body models.CurrencyPayload true "CurrencyPayload Model"
-// @Success 200 {object} map[string]any
-// @Failure 404 {object} httputil.HTTPError
+// @Success 200 {object} string
+// @Failure 404 {object} models.ErrorResponse
 // @Router /currency [post].
 func (h *Handler) CreateCurrencyRateManually(c *gin.Context) {
 	var currencyPayload models.CurrencyPayload
 	if err := c.ShouldBindJSON(&currencyPayload); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Message: err.Error(),
 		})
 	}
 	err := h.Service.AddNewCurrencyManually(&currencyPayload)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Message: err.Error(),
 		})
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -63,13 +63,13 @@ func (h *Handler) CreateCurrencyRateManually(c *gin.Context) {
 // @Tags Currency
 // @Produce json
 // @Success 200 {object} []models.CurrencyPayload
-// @Failure 404 {object} httputil.HTTPError
+// @Failure 404 {object} models.ErrorResponse
 // @Router /currency/update [get].
 func (h *Handler) UpdateCurrencyRatesOnline(c *gin.Context) {
 	rates, err := h.Service.UpdateCurrenciesDatabase()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Message: err.Error(),
 		})
 	}
 	c.JSON(http.StatusOK, rates)
@@ -83,20 +83,20 @@ func (h *Handler) UpdateCurrencyRatesOnline(c *gin.Context) {
 // @Produce json
 // @Param value body models.ConversionRequest true "ConversionRequest Model"
 // @Success 200 {object} []models.ConversionResponse
-// @Failure 404 {object} httputil.HTTPError
+// @Failure 404 {object} models.ErrorResponse
 // @Router /currency/convert [post].
 func (h *Handler) ConvertToAllCurrencies(c *gin.Context) {
 	var conversionReq models.ConversionRequest
 	if err := c.ShouldBindJSON(&conversionReq); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Message: err.Error(),
 		})
 		return
 	}
 	conversions, err := h.Service.ConvertValueToAllCurrencies(&conversionReq)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Message: err.Error(),
 		})
 	}
 	c.JSON(http.StatusOK, conversions)
@@ -109,14 +109,14 @@ func (h *Handler) ConvertToAllCurrencies(c *gin.Context) {
 // @Produce json
 // @Param code path string true "Currency Code"
 // @Success 200 {object} []models.CurrencyPayload
-// @Failure 404 {object} httputil.HTTPError
+// @Failure 404 {object} models.ErrorResponse
 // @Router /currency [get].
 func (h *Handler) GetCurrencyByCode(c *gin.Context) {
 	code := c.Params.ByName("code")
 	currencyPayload, err := h.Service.GetCurrencyRatesByCode(code)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Message: err.Error(),
 		})
 	}
 	c.JSON(http.StatusOK, currencyPayload)

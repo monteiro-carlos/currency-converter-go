@@ -18,7 +18,7 @@ type Handler struct {
 // @Description Shows if all the API's components are up
 // @Produce json
 // @Success 200 {object} models.HealthCheckReadiness
-// @Failure 500 {object} httputil.HTTPError
+// @Failure 500 {object} models.HealthCheckReadiness
 // @Tags HealthCheck
 // @Router /health/readiness [get].
 func (h *Handler) ReadinessHandler(c *gin.Context) {
@@ -53,7 +53,6 @@ func (h *Handler) ReadinessHandler(c *gin.Context) {
 // @Description Shows if this API is up
 // @Produce json
 // @Success 202 {object} models.HealthCheckLiveness
-// @Failure 500 {object} httputil.HTTPError
 // @Tags HealthCheck
 // @Router /health/liveness [get].
 func (h *Handler) LivenessHandler(c *gin.Context) {

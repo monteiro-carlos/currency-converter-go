@@ -24,4 +24,4 @@ generate: swagger
 
 .PHONY: swagger
 swagger:
-	@go run github.com/swaggo/swag/cmd/swag@v1.8.4 init -g internal/api/main.go -o internal/swagger/docs --parseDependency
+	@go run github.com/swaggo/swag/cmd/swag@v1.7.4 init -g internal/api/main.go -o internal/swagger/docs
