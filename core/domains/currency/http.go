@@ -35,6 +35,7 @@ func (h *Handler) GetAllCurrencyRates(c *gin.Context) {
 // @Tags Currency
 // @Accept json
 // @Produce json
+// @Param currencyRate body models.CurrencyPayload true "CurrencyPayload Model"
 // @Success 200 {object} map[string]any
 // @Failure 404 {object} httputil.HTTPError
 // @Router /currency [post].
@@ -80,6 +81,7 @@ func (h *Handler) UpdateCurrencyRatesOnline(c *gin.Context) {
 // @Tags Currency
 // @Accept json
 // @Produce json
+// @Param value body models.ConversionRequest true "ConversionRequest Model"
 // @Success 200 {object} []models.ConversionResponse
 // @Failure 404 {object} httputil.HTTPError
 // @Router /currency/convert [post].
@@ -105,6 +107,7 @@ func (h *Handler) ConvertToAllCurrencies(c *gin.Context) {
 // @Description Gets a currency rate by the currency code given through params
 // @Tags Currency
 // @Produce json
+// @Param code path string true "Currency Code"
 // @Success 200 {object} []models.CurrencyPayload
 // @Failure 404 {object} httputil.HTTPError
 // @Router /currency [get].
