@@ -17,7 +17,7 @@ jobs:
 
       - name: Generate auxiliary files
         run: |
-          make swagger
+          make generate
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:

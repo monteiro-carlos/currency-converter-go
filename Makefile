@@ -18,6 +18,10 @@ docker-db:
 docker-db-stop:
 	@docker-compose -f ./docker-compose-db.yml stop
 
+.PHONY: generate
+generate: swagger
+	@go generate ./...
+
 .PHONY: swagger
 swagger:
 	@go run github.com/swaggo/swag/cmd/swag init -g internal/api/main.go -o internal/swagger/docs --parseDependency --parseInternal --parseDepth 1
