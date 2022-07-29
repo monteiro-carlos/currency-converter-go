@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/currency"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/health"
@@ -8,10 +9,20 @@ import (
 	docs "github.com/monteiro-carlos/eng-gruposbf-backend-golang/internal/swagger/docs"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"time"
 )
 
 func Handler(dep *container.Dependency) {
 	router := gin.Default()
+
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Accept", "Origin", "Content-Type"},
+		AllowCredentials: false,
+		MaxAge:           12 * time.Hour,
+	}))
+
 	currencyHandler := &currency.Handler{
 		Service: dep.Services.Currency,
 	}
