@@ -33,3 +33,7 @@ docker-db-test:
 .PHONY: docker-db-test-stop
 docker-db-test-stop:
 	@docker-compose -f ./integration_test/docker-compose.yml stop
+
+.PHONY: test
+test:
+	@go test -v ./...
