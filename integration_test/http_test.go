@@ -3,13 +3,13 @@ package integration_test
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"testing"
 
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/currency/models"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestAddCurrencyRateManually(t *testing.T) {

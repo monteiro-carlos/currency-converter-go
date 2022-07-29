@@ -9,8 +9,9 @@ import (
 	docs "github.com/monteiro-carlos/eng-gruposbf-backend-golang/internal/swagger/docs"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"time"
 )
+
+const corsMaxAge = 300
 
 func Handler(dep *container.Dependency) {
 	router := gin.Default()
@@ -20,7 +21,7 @@ func Handler(dep *container.Dependency) {
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Accept", "Origin", "Content-Type"},
 		AllowCredentials: false,
-		MaxAge:           12 * time.Hour,
+		MaxAge:           corsMaxAge,
 	}))
 
 	currencyHandler := &currency.Handler{
