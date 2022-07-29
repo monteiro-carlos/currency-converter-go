@@ -36,6 +36,6 @@ jobs:
         run: make test
         env:
           ## environments application
-          DB_DSN_TEST: "host=localhost user=test password=test dbname=test port=5432 sslmode=disable"
+          DSN_TEST: "host=localhost user=test password=test dbname=test port=5432 sslmode=disable"
           FREE_EXC_RATES_API: "https://economia.awesomeapi.com.br/last"
           CURRENCY_CODES: "USD,EUR,INR"
