@@ -61,11 +61,26 @@ Inicialize project from `internal/api/main.go`
 
 ## Runnning tests
 
-To run all tests, just run the following
+Enter projects directory
 
 ```bash
-  make test
+  cd eng-gruposbf-backend-golang
 ```
+
+Generate swagger files
+
+```bash
+  make swagger
+```
+
+Start test database
+
+```bash
+  make docker-db-test
+```
+
+Run tests from `integration_test/http_test.go`
+
 
 
 ## Reference
