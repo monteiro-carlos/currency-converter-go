@@ -15,8 +15,6 @@ func NewLogger() (*Logger, error) {
 	logger, err := config.Build()
 	if err != nil {
 		panic(err)
-		return nil, err
-
 	}
 
 	return &Logger{

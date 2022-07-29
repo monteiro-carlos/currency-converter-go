@@ -20,7 +20,6 @@ type Client struct {
 func NewClient(
 	logger *log.Logger,
 ) (*Client, error) {
-
 	return &Client{
 		log: logger,
 	}, nil
