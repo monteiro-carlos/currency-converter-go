@@ -1,0 +1,41 @@
+name: Tests
+on: [push]
+
+jobs:
+  test:
+    environment: Development
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:13-alpine
+        env:
+          POSTGRES_DB: test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.17
+
+      - name: Generate auxiliary files
+        run: make generate
+
+      - name: Run tests
+        run: make test
+        env:
+          ## environments application
+          DB_DSN_TEST: "host=localhost user=test password=test dbname=test port=5432 sslmode=disable"
+          FREE_EXC_RATES_API: "https://economia.awesomeapi.com.br/last"
+          CURRENCY_CODES: "USD,EUR,INR"
