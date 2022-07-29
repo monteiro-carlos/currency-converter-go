@@ -47,7 +47,7 @@ func (h *Handler) GetAllCurrencyRates(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param currencyRate body models.CurrencyPayload true "CurrencyPayload Model"
-// @Success 200 {object} string
+// @Success 200 {object} []models.CurrencyPayload
 // @Failure 404 {object} models.ErrorResponse
 // @Router /currency [post].
 func (h *Handler) CreateCurrencyRateManually(c *gin.Context) {
@@ -58,16 +58,14 @@ func (h *Handler) CreateCurrencyRateManually(c *gin.Context) {
 			Message: err.Error(),
 		})
 	}
-	err := h.Service.AddNewCurrencyManually(&currencyPayload)
+	currency, err := h.Service.AddNewCurrencyManually(&currencyPayload)
 	if err != nil {
 		h.log.Zap.Error("error", zap.Error(err))
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Message: err.Error(),
 		})
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"msg": "Currency rate manually added",
-	})
+	c.JSON(http.StatusOK, currency)
 }
 
 // UpdateCurrencyRatesOnline godoc

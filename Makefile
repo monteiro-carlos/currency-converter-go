@@ -25,3 +25,11 @@ generate: swagger
 .PHONY: swagger
 swagger:
 	@go run github.com/swaggo/swag/cmd/swag@v1.7.4 init -g internal/api/main.go -o internal/swagger/docs
+
+.PHONY: docker-db-test
+docker-db-test:
+	@docker-compose -f ./integration_test/docker-compose.yml up
+
+.PHONY: docker-db-test-stop
+docker-db-test-stop:
+	@docker-compose -f ./integration_test/docker-compose.yml stop

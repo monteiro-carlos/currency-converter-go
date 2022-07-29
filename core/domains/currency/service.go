@@ -11,7 +11,9 @@ import (
 )
 
 type ServiceI interface {
-	AddNewCurrencyManually(currency *models.CurrencyPayload) error
+	AddNewCurrencyManually(
+		currency *models.CurrencyPayload,
+	) (*models.CurrencyPayload, error)
 	GetAllCurrencyRates() ([]models.CurrencyPayload, error)
 	UpdateCurrenciesDatabase() ([]models.CurrencyPayload, error)
 	ConvertValueToAllCurrencies(
@@ -42,7 +44,9 @@ func NewCurrencyService(
 	}, nil
 }
 
-func (c *Currency) AddNewCurrencyManually(currency *models.CurrencyPayload) error {
+func (c *Currency) AddNewCurrencyManually(
+	currency *models.CurrencyPayload,
+) (*models.CurrencyPayload, error) {
 	input := &repository.CurrencyRate{
 		Currency: repository.Currency{
 			Code: currency.Currency.Code,
@@ -52,11 +56,11 @@ func (c *Currency) AddNewCurrencyManually(currency *models.CurrencyPayload) erro
 	}
 	if err := c.repository.CreateCurrencyRate(input); err != nil {
 		c.logger.Zap.Error("errorMsg", zap.Error(err))
-		return err
+		return nil, err
 	}
 	c.logger.Zap.Info("AddNewCurrencyManually",
 		zap.Any("payload", input))
-	return nil
+	return currency, nil
 }
 
 func (c *Currency) GetAllCurrencyRates() ([]models.CurrencyPayload, error) {
