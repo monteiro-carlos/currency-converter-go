@@ -3,15 +3,15 @@ package container
 import (
 	"os"
 
+	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/adapters/exchangeapi"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/currency"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/health"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/internal/database"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
+	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/internal/log"
 )
 
 type components struct {
-	Log zap.Logger
+	Log *log.Logger
 }
 
 type Services struct {
@@ -40,9 +40,15 @@ func New() (*Dependency, error) {
 		return nil, err
 	}
 
+	exchangeClient, err := exchangeapi.NewClient(cmp.Log)
+	if err != nil {
+		return nil, err
+	}
+
 	currencyService, err := currency.NewCurrencyService(
 		repository,
 		cmp.Log,
+		exchangeClient,
 	)
 	if err != nil {
 		return nil, err
@@ -70,14 +76,12 @@ func New() (*Dependency, error) {
 }
 
 func setupComponents() (*components, error) {
-	config := zap.NewProductionConfig()
-	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-	logger, err := config.Build()
+	logger, err := log.NewLogger()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	return &components{
-		Log: *logger,
+		Log: logger,
 	}, nil
 }

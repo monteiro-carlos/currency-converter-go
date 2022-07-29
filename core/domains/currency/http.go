@@ -5,10 +5,20 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/core/domains/currency/models"
+	"github.com/monteiro-carlos/eng-gruposbf-backend-golang/internal/log"
+	"go.uber.org/zap"
 )
 
 type Handler struct {
 	Service ServiceI
+	log     *log.Logger
+}
+
+func NewHandler(service ServiceI, logger *log.Logger) *Handler {
+	return &Handler{
+		Service: service,
+		log:     logger,
+	}
 }
 
 // GetAllCurrencyRates godoc
@@ -22,11 +32,12 @@ type Handler struct {
 func (h *Handler) GetAllCurrencyRates(c *gin.Context) {
 	currencyRates, err := h.Service.GetAllCurrencyRates()
 	if err != nil {
+		h.log.Zap.Error("error", zap.Error(err))
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Message: err.Error(),
 		})
 	}
-	c.JSON(http.StatusOK, &currencyRates)
+	c.JSON(http.StatusOK, currencyRates)
 }
 
 // CreateCurrencyRateManually godoc
@@ -42,12 +53,14 @@ func (h *Handler) GetAllCurrencyRates(c *gin.Context) {
 func (h *Handler) CreateCurrencyRateManually(c *gin.Context) {
 	var currencyPayload models.CurrencyPayload
 	if err := c.ShouldBindJSON(&currencyPayload); err != nil {
+		h.log.Zap.Error("error", zap.Error(err))
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Message: err.Error(),
 		})
 	}
 	err := h.Service.AddNewCurrencyManually(&currencyPayload)
 	if err != nil {
+		h.log.Zap.Error("error", zap.Error(err))
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Message: err.Error(),
 		})
@@ -68,6 +81,7 @@ func (h *Handler) CreateCurrencyRateManually(c *gin.Context) {
 func (h *Handler) UpdateCurrencyRatesOnline(c *gin.Context) {
 	rates, err := h.Service.UpdateCurrenciesDatabase()
 	if err != nil {
+		h.log.Zap.Error("error", zap.Error(err))
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Message: err.Error(),
 		})
@@ -88,6 +102,7 @@ func (h *Handler) UpdateCurrencyRatesOnline(c *gin.Context) {
 func (h *Handler) ConvertToAllCurrencies(c *gin.Context) {
 	var conversionReq models.ConversionRequest
 	if err := c.ShouldBindJSON(&conversionReq); err != nil {
+		h.log.Zap.Error("error", zap.Error(err))
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Message: err.Error(),
 		})
@@ -95,6 +110,7 @@ func (h *Handler) ConvertToAllCurrencies(c *gin.Context) {
 	}
 	conversions, err := h.Service.ConvertValueToAllCurrencies(&conversionReq)
 	if err != nil {
+		h.log.Zap.Error("error", zap.Error(err))
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Message: err.Error(),
 		})
@@ -115,6 +131,7 @@ func (h *Handler) GetCurrencyByCode(c *gin.Context) {
 	code := c.Params.ByName("code")
 	currencyPayload, err := h.Service.GetCurrencyRatesByCode(code)
 	if err != nil {
+		h.log.Zap.Error("error", zap.Error(err))
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Message: err.Error(),
 		})
